@@ -19,13 +19,21 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         (all requests will be handled by this method)
         """
         for line in self.rfile:
-            
+
             if line[:8].decode('utf-8') == 'REGISTER':
-                print("El cliente nos manda ", line.decode('utf-8'))
-                User = line[14:-10].decode('utf-8')
-                print(User)
+                print(line.decode('utf-8'))
+                User = line[13:-10].decode('utf-8')
                 self.Users[User] = self.client_address[0]
                 self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
+            elif line.decode('utf-8').split(':')[0] == 'Expires':
+                date = line.decode('utf-8').split(':')[1]
+                date = date[:-2]
+                if date == '0':
+                    print('Expirado')
+                    del self.Users[User]
+                    self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
+                else:
+                    print('NO expirado')
                 
         print(self.Users)
 if __name__ == "__main__":
