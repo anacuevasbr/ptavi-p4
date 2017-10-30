@@ -45,7 +45,7 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                 print(line.decode('utf-8'))
                 Sip_ad = line[13:-10].decode('utf-8')
                 self.DicUsers[Sip_ad] = [self.client_address[0], 0]
-            
+
             elif line.decode('utf-8').split(':')[0] == 'Expires':
                 date = line.decode('utf-8').split(':')[1]
                 date = time.time() + float(date[:-2])
