@@ -21,7 +21,7 @@ if sys.argv[3] == 'register':
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
         my_socket.connect((SERVER, PORT))
         my_socket.send(bytes('REGISTER sip:' + User + ' SIP/2.0\r\n' +
-                       'Expires:' + sys.argv[5] + '\r\n\r\n', 'utf-8'))
+                       'Expires: ' + sys.argv[5] + '\r\n\r\n', 'utf-8'))
         data = my_socket.recv(1024)
         print(data.decode('utf-8'))
 
