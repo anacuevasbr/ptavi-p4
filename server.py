@@ -46,13 +46,11 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                 date = line.decode('utf-8').split(':')[1]
                 date = time.time() + float(date[:-2])
                 date = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(date))
-                print(date)
+                timenow = time.strftime('%Y-%m-%d %H:%M:%S',time.gmtime(time.time()))
                 self.DicUsers[Sip_ad][1] = date
                 Delete = []
                 for User in self.DicUsers:
-                    if str(self.DicUsers[User][1]) <= time.strftime('%Y-%m-%d %H:%M:%S',
-                                                                time.gmtime(time.time())):
-                        print('Expirado')
+                    if str(self.DicUsers[User][1]) <= timenow:
                         Delete.append(User)
                     else:
                         print('NO expirado')
