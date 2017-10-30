@@ -9,9 +9,8 @@ import time
 
 
 class SIPRegisterHandler(socketserver.DatagramRequestHandler):
-
     """
-    Echo server class
+    SIP handler
     """
     DicUsers = {}
 
