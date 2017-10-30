@@ -69,6 +69,8 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
 if __name__ == "__main__":
     # Listens at localhost ('') port 6001
     # and calls the EchoHandler class to manage the request
+    if len(sys.argv) != 2:
+        sys.exit('Usage: python3 server.py puerto')
     serv = socketserver.UDPServer(('', int(sys.argv[1])), SIPRegisterHandler)
 
     print("Lanzando servidor UDP de eco...")
