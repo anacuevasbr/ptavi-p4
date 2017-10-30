@@ -14,21 +14,34 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
     """
     DicUsers = {}
 
-    def register2json(self, User):
-        print(User)
-        json.dump(self.DicUsers, open('Users.json', 'w'))
+    def register2json(self):
+
+        json.dump(self.DicUsers, open('registered.json', 'w'))
+
+    def json2register(self):
+        try:
+            with open('registered.json', 'r') as file:
+                self.DicUsers=json.load(file)
+        except FileNotFoundError:
+            print('NO existe el fichero')
+
     def handle(self):
         """
         handle method of the server class
         (all requests will be handled by this method)
         """
+        if self.DicUsers == {}:
+            self.json2register()
+            print('vuelve de json')
+            print(self.DicUsers)
+
         for line in self.rfile:
 
             if line[:8].decode('utf-8') == 'REGISTER':
                 print(line.decode('utf-8'))
                 Sip_ad = line[13:-10].decode('utf-8')
                 self.DicUsers[Sip_ad] = [self.client_address[0], 0]
-                self.register2json(Sip_ad)
+                self.register2json()
             elif line.decode('utf-8').split(':')[0] == 'Expires':
                 date = line.decode('utf-8').split(':')[1]
                 date = time.time() + float(date[:-2])
@@ -37,15 +50,15 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                 self.DicUsers[Sip_ad][1] = date
                 Delete = []
                 for User in self.DicUsers:
-                    if self.DicUsers[User][1] <= time.strftime('%Y-%m-%d %H:%M:%S',
+                    if str(self.DicUsers[User][1]) <= time.strftime('%Y-%m-%d %H:%M:%S',
                                                                 time.gmtime(time.time())):
                         print('Expirado')
                         Delete.append(User)
                     else:
                         print('NO expirado')
                 for User in Delete:
-                    del self.DicUsers[Sip_ad]
-                    self.register2json(User)
+                    del self.DicUsers[User]
+                    self.register2json()
                 self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
                     
                 
