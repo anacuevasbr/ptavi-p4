@@ -15,10 +15,15 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
     DicUsers = {}
 
     def register2json(self):
-
+        """
+        Gets the dictionary and turns it into a json file
+        """    
         json.dump(self.DicUsers, open('registered.json', 'w'))
 
     def json2register(self):
+        """
+        Gets a json file and turns it into a dictionary file
+        """    
         try:
             with open('registered.json', 'r') as file:
                 self.DicUsers=json.load(file)
@@ -41,13 +46,14 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                 print(line.decode('utf-8'))
                 Sip_ad = line[13:-10].decode('utf-8')
                 self.DicUsers[Sip_ad] = [self.client_address[0], 0]
-                self.register2json()
+
             elif line.decode('utf-8').split(':')[0] == 'Expires':
                 date = line.decode('utf-8').split(':')[1]
                 date = time.time() + float(date[:-2])
                 date = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(date))
                 timenow = time.strftime('%Y-%m-%d %H:%M:%S',time.gmtime(time.time()))
                 self.DicUsers[Sip_ad][1] = date
+                self.register2json()
                 Delete = []
                 for User in self.DicUsers:
                     if str(self.DicUsers[User][1]) <= timenow:
