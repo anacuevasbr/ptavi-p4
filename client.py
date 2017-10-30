@@ -19,10 +19,9 @@ if sys.argv[3] == 'register':
     # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
         my_socket.connect((SERVER, PORT))
-        print("Enviando:register")
         my_socket.send(bytes('REGISTER sip:' + User + ' SIP/2.0\r\n' + 
                        'Expires:' + sys.argv[5] + '\r\n\r\n', 'utf-8'))
         data = my_socket.recv(1024)
-        print('Recibido -- ', data.decode('utf-8'))
+        print(data.decode('utf-8'))
 
     print("Socket terminado.")
