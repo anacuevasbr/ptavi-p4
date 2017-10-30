@@ -28,8 +28,8 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         try:
             with open('registered.json', 'r') as file:
                 self.DicUsers = json.load(file)
-        except FileNotFoundError:
-            print('NO existe el fichero')
+        except (FileNotFoundError, ValueError, json.decoder.JSONDecodeError):
+            pass
 
     def handle(self):
         """
@@ -59,8 +59,6 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                 for User in self.DicUsers:
                     if str(self.DicUsers[User][1]) <= timenow:
                         Delete.append(User)
-                    else:
-                        print('NO expirado')
                 for User in Delete:
                     del self.DicUsers[User]
                     self.register2json()
